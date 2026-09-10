@@ -21,7 +21,9 @@ import {
 
 const phone = '083558 94115';
 const tel = 'tel:08355894115';
-const mapUrl = 'https://www.google.com/maps/search/?api=1&query=Deep+Unisex+Salon+Sanpada+Navi+Mumbai';
+const mapQuery = 'Deep Unisex Salon, Sanpada, Navi Mumbai, Maharashtra';
+const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed`;
 
 const services = [
   { name: 'Precision Haircuts', note: 'Cut, finish & styling', icon: Scissors },
@@ -119,7 +121,7 @@ function App() {
 
         <section className="reviews section-pad" id="reviews"><div className="content-wrap review-layout"><div><div className="section-label">04 / Words from you</div><h2>Good hair<br /><em>travels.</em></h2><div className="google-rating"><div className="google-mark">G</div><div><strong>4.8 <span>★★★★★</span></strong><small>301 Google reviews</small></div></div><div className="review-controls"><button onClick={previousReview} aria-label="Previous review"><ChevronLeft size={19} /></button><span>{String(reviewIndex + 1).padStart(2, '0')} / {String(reviews.length).padStart(2, '0')}</span><button onClick={nextReview} aria-label="Next review"><ChevronRight size={19} /></button></div></div><div className="review-card"><div className="quote-mark">“</div><div className="stars">★★★★★</div><blockquote>{reviews[reviewIndex].text}</blockquote><div className="review-author"><div className="avatar">{reviews[reviewIndex].name.charAt(0)}</div><div><strong>{reviews[reviewIndex].name}</strong><small>{reviews[reviewIndex].role}</small></div><span className="verified">Verified review</span></div></div></div></section>
 
-        <section className="location section-pad" id="location"><div className="content-wrap location-grid"><div className="map-frame"><iframe title="Deep Unisex Salon location" src="https://www.google.com/maps?q=Deep+Unisex+Salon+Sanpada+Navi+Mumbai&output=embed" loading="lazy" /></div><div className="location-copy"><div className="section-label">05 / Find us</div><h2>Your next look<br />starts <em>here.</em></h2><p>Plot no 109, Cooperative Housing Society, Shop no 03, opposite Vashi Station, Sector 1, Palm Beach Rd, Sanpada, Navi Mumbai, Maharashtra</p><div className="hours"><div><Clock3 size={18} /><span><strong>Opening hours</strong>Every day · 10:00 AM — 9:00 PM</span></div><div><Phone size={18} /><span><strong>Call us</strong>{phone}</span></div></div><a className="button button-outline" href={mapUrl} target="_blank" rel="noreferrer">Get directions <ArrowUpRight size={17} /></a></div></div></section>
+        <section className="location section-pad" id="location"><div className="content-wrap location-grid"><div className="map-frame"><iframe title="Deep Unisex Salon location" src={mapEmbed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></div><div className="location-copy"><div className="section-label">05 / Find us</div><h2>Your next look<br />starts <em>here.</em></h2><p>Plot no 109, Cooperative Housing Society, Shop no 03, opposite Vashi Station, Sector 1, Palm Beach Rd, Sanpada, Navi Mumbai, Maharashtra</p><div className="hours"><div><Clock3 size={18} /><span><strong>Opening hours</strong>Every day · 10:00 AM — 9:00 PM</span></div><div><Phone size={18} /><span><strong>Call us</strong>{phone}</span></div></div><a className="button button-outline" href={mapUrl} target="_blank" rel="noreferrer">Get directions <ArrowUpRight size={17} /></a></div></div></section>
 
         <section className="booking" id="contact"><div className="content-wrap booking-inner"><div className="section-label">06 / Make it yours</div><h2>Ready for your<br /><em>next look?</em></h2><p>Good things are worth making time for.</p><a className="button button-gold" href={tel}><Phone size={17} /> Call to book appointment</a><a className="booking-phone" href={tel}>{phone}</a></div></section>
       </main>
