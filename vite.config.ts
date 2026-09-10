@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from 'node:url';
 // https://vitejs.dev/config/
 export default defineConfig({
   // Deploy to GitHub Pages at https://syedtajamul32-ux.github.io/deepunisexsalon1/
- base: '/DeepunisexSalon/',
+  base: '/deepunisexsalon1/',
   plugins: [react()],
   resolve: {
     alias: {
