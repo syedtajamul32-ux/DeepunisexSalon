@@ -4,6 +4,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   CalendarDays,
+  Check,
   ChevronLeft,
   ChevronRight,
   Clock3,
@@ -12,6 +13,7 @@ import {
   Instagram,
   MapPin,
   Menu,
+  MessageCircle,
   Phone,
   Scissors,
   Sparkles,
@@ -21,9 +23,24 @@ import {
 
 const phone = '083558 94115';
 const tel = 'tel:08355894115';
+const whatsappNumber = '918355894115';
+const instagramUrl = 'https://www.instagram.com/deep_unisex_salon_navi_mumbai';
 const mapQuery = 'Deep Unisex Salon, Sanpada, Navi Mumbai, Maharashtra';
 const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
 const mapEmbed = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=15&output=embed`;
+
+const serviceOptions = [
+  'Precision Haircut',
+  'Colour & Highlights',
+  'Hair Spa & Treatment',
+  'Bridal & Occasion',
+  'Grooming Rituals',
+  'Texture & Braids',
+  'Other',
+];
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const times = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'];
 
 const services = [
   { name: 'Precision Haircuts', note: 'Cut, finish & styling', icon: Scissors },
@@ -55,6 +72,11 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [reviewIndex, setReviewIndex] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [bookingStep, setBookingStep] = useState(0);
+  const [bookingDay, setBookingDay] = useState('');
+  const [bookingTime, setBookingTime] = useState('');
+  const [bookingService, setBookingService] = useState('');
 
   useEffect(() => {
     const timer = window.setTimeout(() => setVisible(true), 100);
@@ -69,6 +91,26 @@ function App() {
   const nextReview = () => setReviewIndex((index) => (index + 1) % reviews.length);
   const previousReview = () => setReviewIndex((index) => (index - 1 + reviews.length) % reviews.length);
 
+  const openBooking = () => {
+    setBookingStep(0);
+    setBookingDay('');
+    setBookingTime('');
+    setBookingService('');
+    setBookingOpen(true);
+  };
+
+  const closeBooking = () => setBookingOpen(false);
+
+  const confirmBooking = () => {
+    const message = `Hey, I want to book an appointment for ${bookingService} on ${bookingDay} at ${bookingTime}.`;
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+    setBookingOpen(false);
+  };
+
+  const bookingStepNext = () => setBookingStep((s) => Math.min(s + 1, 3));
+  const bookingStepBack = () => setBookingStep((s) => Math.max(s - 1, 0));
+
   return (
     <div className="site-shell">
       <header className="site-header">
@@ -80,9 +122,9 @@ function App() {
           {['Home', 'Services', 'Gallery', 'Reviews', 'Location', 'Contact'].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{item}</a>
           ))}
-          <a className="nav-book mobile-book" href={tel}><Phone size={15} /> Book appointment</a>
+          <a className="nav-book mobile-book" href="#contact" onClick={(e) => { e.preventDefault(); openBooking(); setMenuOpen(false); }}><MessageCircle size={15} /> Book appointment</a>
         </nav>
-        <a className="nav-book" href={tel}><Phone size={15} /> Book appointment</a>
+        <a className="nav-book" href="#contact" onClick={(e) => { e.preventDefault(); openBooking(); }}><MessageCircle size={15} /> Book appointment</a>
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
@@ -97,7 +139,7 @@ function App() {
             <h1>Where style meets <em>precision.</em></h1>
             <p className="hero-copy">A considered hair and beauty experience for every kind of you, right in the heart of Sanpada.</p>
             <div className="hero-actions">
-              <a href={tel} className="button button-gold">Book your appointment <ArrowUpRight size={17} /></a>
+              <a href="#contact" onClick={(e) => { e.preventDefault(); openBooking(); }} className="button button-gold">Book your appointment <ArrowUpRight size={17} /></a>
               <a href="#services" className="text-link">Explore services <ArrowDown size={16} /></a>
             </div>
             <div className="hero-detail"><MapPin size={15} /> Palm Beach Road, Sanpada <span /> Open today · 10:00 AM — 9:00 PM</div>
@@ -123,10 +165,74 @@ function App() {
 
         <section className="location section-pad" id="location"><div className="content-wrap location-grid"><div className="map-frame"><iframe title="Deep Unisex Salon location" src={mapEmbed} loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></div><div className="location-copy"><div className="section-label">05 / Find us</div><h2>Your next look<br />starts <em>here.</em></h2><p>Plot no 109, Cooperative Housing Society, Shop no 03, opposite Vashi Station, Sector 1, Palm Beach Rd, Sanpada, Navi Mumbai, Maharashtra</p><div className="hours"><div><Clock3 size={18} /><span><strong>Opening hours</strong>Every day · 10:00 AM — 9:00 PM</span></div><div><Phone size={18} /><span><strong>Call us</strong>{phone}</span></div></div><a className="button button-outline" href={mapUrl} target="_blank" rel="noreferrer">Get directions <ArrowUpRight size={17} /></a></div></div></section>
 
-        <section className="booking" id="contact"><div className="content-wrap booking-inner"><div className="section-label">06 / Make it yours</div><h2>Ready for your<br /><em>next look?</em></h2><p>Good things are worth making time for.</p><a className="button button-gold" href={tel}><Phone size={17} /> Call to book appointment</a><a className="booking-phone" href={tel}>{phone}</a></div></section>
+        <section className="booking" id="contact"><div className="content-wrap booking-inner"><div className="section-label">06 / Make it yours</div><h2>Ready for your<br /><em>next look?</em></h2><p>Good things are worth making time for.</p><a className="button button-gold" href="#contact" onClick={(e) => { e.preventDefault(); openBooking(); }}><MessageCircle size={17} /> Book via WhatsApp</a><a className="booking-phone" href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">{phone}</a></div></section>
       </main>
 
-      <footer className="footer"><div className="content-wrap footer-grid"><div className="brand footer-brand"><span className="brand-mark">D</span><span><strong>DEEP</strong><small>UNISEX SALON</small></span></div><p>Hair, beauty & confidence<br />in Sanpada, Navi Mumbai.</p><div className="footer-address"><MapPin size={15} /> Plot no 109, CHS, Shop no 03,<br />opposite Vashi Station, Palm Beach Rd, Sanpada</div><div className="socials"><a href="#contact" aria-label="Instagram"><Instagram size={18} /></a><a href="#contact" aria-label="Facebook"><Facebook size={18} /></a></div></div><div className="content-wrap footer-bottom"><span>© 2024 Deep Unisex Salon. All rights reserved.</span><span>Crafted for your confidence.</span></div></footer>
+      <footer className="footer"><div className="content-wrap footer-grid"><div className="brand footer-brand"><span className="brand-mark">D</span><span><strong>DEEP</strong><small>UNISEX SALON</small></span></div><p>Hair, beauty & confidence<br />in Sanpada, Navi Mumbai.</p><div className="footer-address"><MapPin size={15} /> Plot no 109, CHS, Shop no 03,<br />opposite Vashi Station, Palm Beach Rd, Sanpada</div><div className="socials"><a href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={18} /></a><a href={instagramUrl} target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={18} /></a></div></div><div className="content-wrap footer-bottom"><span>© 2024 Deep Unisex Salon. All rights reserved.</span><span>Crafted for your confidence.</span></div></footer>
+
+      {bookingOpen && (
+        <div className="booking-overlay" onClick={closeBooking}>
+          <div className="booking-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="booking-close" onClick={closeBooking} aria-label="Close"><X size={20} /></button>
+            <div className="section-label">Book your appointment</div>
+            <h3>Let's get you in the chair</h3>
+
+            {bookingStep === 0 && (
+              <div className="booking-step">
+                <p className="booking-step-title"><CalendarDays size={16} /> Pick a day</p>
+                <div className="booking-options">
+                  {days.map((d) => <button key={d} className={`booking-option ${bookingDay === d ? 'selected' : ''}`} onClick={() => { setBookingDay(d); }}>{d}</button>)}
+                </div>
+                <div className="booking-nav">
+                  <button className="button button-gold" disabled={!bookingDay} onClick={bookingStepNext}>Next <ArrowRight size={15} /></button>
+                </div>
+              </div>
+            )}
+
+            {bookingStep === 1 && (
+              <div className="booking-step">
+                <p className="booking-step-title"><Clock3 size={16} /> Pick a time</p>
+                <div className="booking-options booking-options-time">
+                  {times.map((t) => <button key={t} className={`booking-option ${bookingTime === t ? 'selected' : ''}`} onClick={() => { setBookingTime(t); }}>{t}</button>)}
+                </div>
+                <div className="booking-nav">
+                  <button className="booking-back" onClick={bookingStepBack}>Back</button>
+                  <button className="button button-gold" disabled={!bookingTime} onClick={bookingStepNext}>Next <ArrowRight size={15} /></button>
+                </div>
+              </div>
+            )}
+
+            {bookingStep === 2 && (
+              <div className="booking-step">
+                <p className="booking-step-title"><Scissors size={16} /> Pick a service</p>
+                <div className="booking-options">
+                  {serviceOptions.map((s) => <button key={s} className={`booking-option ${bookingService === s ? 'selected' : ''}`} onClick={() => { setBookingService(s); }}>{s}</button>)}
+                </div>
+                <div className="booking-nav">
+                  <button className="booking-back" onClick={bookingStepBack}>Back</button>
+                  <button className="button button-gold" disabled={!bookingService} onClick={bookingStepNext}>Review <ArrowRight size={15} /></button>
+                </div>
+              </div>
+            )}
+
+            {bookingStep === 3 && (
+              <div className="booking-step">
+                <p className="booking-step-title"><Check size={16} /> Confirm your booking</p>
+                <div className="booking-summary">
+                  <div><span>Service</span><strong>{bookingService}</strong></div>
+                  <div><span>Day</span><strong>{bookingDay}</strong></div>
+                  <div><span>Time</span><strong>{bookingTime}</strong></div>
+                </div>
+                <p className="booking-preview">"Hey, I want to book an appointment for {bookingService} on {bookingDay} at {bookingTime}."</p>
+                <div className="booking-nav">
+                  <button className="booking-back" onClick={bookingStepBack}>Back</button>
+                  <button className="button button-gold booking-confirm" onClick={confirmBooking}><MessageCircle size={16} /> Yes, send on WhatsApp</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
